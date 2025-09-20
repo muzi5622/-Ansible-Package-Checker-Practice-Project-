@@ -1,0 +1,23 @@
+---
+- name: Package Checker
+  hosts: web
+  become: true
+  gather_facts: true
+
+  vars:
+    remote_script: /tmp/pkg_check.sh
+
+  tasks:
+    - name: Copy package checker script
+      copy:
+        src: ./pkg_check.sh
+        dest: "{{ remote_script }}"
+        mode: '0755'
+
+    - name: Run package checker script
+      command: "{{ remote_script }}"
+      register: script_output
+
+    - name: Show script results
+      debug:
+        msg: "{{ script_output.stdout_lines }}"
